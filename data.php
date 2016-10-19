@@ -45,7 +45,7 @@
 <?=$_SESSION["userEmail"];?>
 
 <p>
-	Tere tulemast <?=$_SESSION["userEmail"];?>!
+	Tere tulemast <a href="user.php"><?=$_SESSION["userEmail"];?></a>!
 	<a href="?logout=1">logi välja</a>
 </p>
 
