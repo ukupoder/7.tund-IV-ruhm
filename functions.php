@@ -1,13 +1,13 @@
 <?php 
 
-	require("../../../config.php");
+	require("../../config.php");
 	
 	// see fail peab olema siis seotud kõigiga kus
 	// tahame sessiooni kasutada
 	// saab kasutada nüüd $_SESSION muutujat
 	session_start();
 	
-	$database = "if16_romil";
+	$database = "if16_ukupode";
 	// functions.php
 	
 	function signup($email, $password) {
@@ -170,6 +170,30 @@
 			echo "salvestamine õnnestus";
 		} else {
 		 	echo "ERROR ".$stmt->error;
+		}
+		
+		$stmt->close();
+		$mysqli->close();
+		
+	}
+	
+	
+	
+	
+	function saveUserInterest ($interest) {
+	
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+
+		$stmt = $mysqli->prepare("INSERT INTO user_interests (user_id,interest_id) VALUES (?, ?)");
+
+		echo $mysqli->error;
+		
+		$stmt->bind_param("ii", $_SESSION["userId"], $interest);
+		
+		if($stmt->execute()) {
+			echo "salvestamine õnnestus";
+		} else {
+			echo "ERROR ".$stmt->error;
 		}
 		
 		$stmt->close();
