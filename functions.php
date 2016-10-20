@@ -184,6 +184,24 @@
 	
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 
+		$stmt = $mysqli->prepare("SELECT id FROM user_interests WHERE user_id=? AND interest_id=?");
+		
+		$stmt->bind_param("ii", $_SESSION["userId"], $interest);
+		
+		$stmt->execute();
+		//kas rida olemas
+		if ($stmt->fetch())
+		{
+			//oli olemas
+			echo "juba olemas";
+			//pärast returni enam koodi ei vaadata
+			return;
+			
+		}
+		
+		//kui ei ole, jõuan siia
+		$stmt->close();
+			
 		$stmt = $mysqli->prepare("INSERT INTO user_interests (user_id,interest_id) VALUES (?, ?)");
 
 		echo $mysqli->error;
@@ -200,6 +218,52 @@
 		$mysqli->close();
 		
 	}
+	
+	
+		function getUserInterests() {
+	
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+	
+		$stmt = $mysqli->prepare("
+			SELECT user_sample.email, interests.interest
+			FROM user_interests
+			INNER JOIN user_sample
+			on user_interests.user_id=user_sample.id 
+			INNER JOIN interests
+			on user_interests.interest_id = interests.id where user_sample.id =?
+		");
+		//SESSION USER ID
+		
+		$stmt->bind_param("i", $_SESSION["userId"]);
+		
+		echo $mysqli->error;
+		
+		$stmt->bind_result($email, $interest);
+		$stmt->execute();
+		
+		
+		//tekitan massiivi
+		$result = array();
+		
+		// tee seda seni, kuni on rida andmeid
+		// mis vastab select lausele
+		while ($stmt->fetch()) {
+			
+			//tekitan objekti
+			$i = new StdClass();
+			
+			$i->interest = $interest;
+		
+			array_push($result, $i);
+		}
+		
+		$stmt->close();
+		$mysqli->close();
+		
+		return $result;
+	}
+		
+	
 	
 	function getAllInterests() {
 		
