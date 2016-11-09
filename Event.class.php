@@ -24,7 +24,23 @@ class event{
 		
 	}
 	
-	function getAllPeople($q) {
+	function getAllPeople($q, $sort, $order) {
+		
+		$allowedSort = ["id","age","color"];
+		
+		//sort ei kuulu lubatud valikute alla
+		if (!in_array($sort, $allowedSort)){
+			$sort = "id";
+		}
+		$orderBy = "ASC";
+		
+		if($order == "DESC"){
+			
+			$orderBy = "DESC";
+		}
+		
+		echo "Sorteerin: ".$sort." ".$orderBy." ";
+		
 		
 		if($q != ""){
 			
@@ -35,6 +51,7 @@ class event{
 			FROM whistle
 			WHERE deleted IS NULL
 			AND (age LIKE ? OR color LIKE ?)
+			ORDER BY $sort $orderBy
 			");
 
 			$searchWord= "%".$q."%";
@@ -47,6 +64,7 @@ class event{
 			SELECT id, age, color
 			FROM whistle
 			WHERE deleted IS NULL
+			ORDER BY $sort $orderBy
 			");
 			
 			

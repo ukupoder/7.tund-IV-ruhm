@@ -36,21 +36,28 @@
 		header ("Location:data.php");
 	}
 	if(isset($_GET["q"])){
-		
-		
+
 		$q =$_GET["q"];
 		
-		
 	}else{
-		
-		
 		//ei otsi
 		$q="";
-		
-		
-		
+	
 	}
-	$people = $Event->getAllPeople($q);
+	
+	//vaikimisi sort kui keegi midagi ei vajuta
+	$sort = "id";
+	$order = "ASC";
+	
+	if(isset($_GET["sort"]) && isset($_GET["order"])){
+		
+		$sort = $_GET["sort"];
+		$order = $_GET["order"];
+	}
+	
+	
+	
+	$people = $Event->getAllPeople($q, $sort, $order);
 	
 	echo "<pre>";
 	//var_dump($people[5]);
@@ -94,14 +101,28 @@
 
 
 <?php 
-
+	$orderId = "ASC";
+	$arr= "&darr;";
+	if (isset($_GET["order"]) && $_GET["order"]== "ASC" && $_GET["sort"]=="id"){
+			$orderId = "DESC";
+			$arr= "&uarr;";
+	}
+	if (isset($_GET["order"]) && $_GET["order"]== "ASC" && $_GET["sort"]=="age"){
+			$orderId = "DESC";	
+	}
+	if (isset($_GET["order"]) && $_GET["order"]== "ASC" && $_GET["sort"]=="color"){
+			$orderId = "DESC";	
+	}
 	
 	$html = "<table>";
 	
 		$html .= "<tr>";
-			$html .= "<th>ID</th>";
-			$html .= "<th>Vanus</th>";
-			$html .= "<th>Värv</th>";
+			$html .= "<th><a href='?q=".$q."&sort=id&order=".$orderId."'>ID".$arr."</th>";
+				
+			$html .= "<th><a href='?q=".$q."&sort=age&order=".$orderId."'>Vanus</th>";
+			
+			$html .= "<th><a href='?q=".$q."&sort=color&order=".$orderId."'>Värv</th>";
+			
 		$html .= "</tr>";
 		
 		//iga liikme kohta massiivis
