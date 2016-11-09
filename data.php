@@ -1,6 +1,10 @@
 <?php 
 	//ühendan sessiooniga
 	require("functions.php");
+	require("Event.class.php");
+	$Event = new Event($mysqli);
+	require("Helper.class.php");
+	$Helper = new Helper($mysqli);
 	
 	//kui ei ole sisseloginud, suunan login lehele
 	if (!isset($_SESSION["userId"])) {
@@ -26,21 +30,35 @@
 	) {
 		
 		
-		$color = cleanInput($_POST["color"]);
+		$color = $Helper->cleanInput($_POST["color"]);
 		
-		saveEvent(cleanInput($_POST["age"]), $color);
+		$Event->saveEvent($Helper->cleanInput($_POST["age"]), $color);
+		header ("Location:data.php");
 	}
-	
-	$people = getAllPeople();
+	if(isset($_GET["q"])){
+		
+		
+		$q =$_GET["q"];
+		
+		
+	}else{
+		
+		
+		//ei otsi
+		$q="";
+		
+		
+		
+	}
+	$people = $Event->getAllPeople($q);
 	
 	echo "<pre>";
-	var_dump($people[5]);
+	//var_dump($people[5]);
 	echo "</pre>";
 	
 ?>
 <h1>Data</h1>
 
-<?php echo$_SESSION["userEmail"];?>
 
 <?=$_SESSION["userEmail"];?>
 
@@ -68,6 +86,13 @@
 
 <h2>Arhiiv</h2>
 
+<form>
+	<input type="search" name="q" value="<?=$q;?>">
+	<input type="submit" name="Otsi">
+	
+</form>
+
+
 <?php 
 
 	
@@ -86,6 +111,9 @@
 				$html .= "<td>".$p->id."</td>";
 				$html .= "<td>".$p->age."</td>";
 				$html .= "<td>".$p->lightColor."</td>";
+				
+				$html .= "<td><a href='edit.php?id=".$p->id."'>edit.php</a></td>";
+ 
 			$html .= "</tr>";
 		
 		}

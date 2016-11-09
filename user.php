@@ -1,6 +1,14 @@
 <?php 
 	
 	require("functions.php");
+	require("User.class.php");
+	$User = new User($mysqli);
+	require("Interest.class.php");
+	$Interest = new Interest($mysqli);
+	require("Helper.class.php");
+	$Helper = new Helper($mysqli);
+	
+	
 	
 	//kui ei ole kasutaja id'd
 	if (!isset($_SESSION["userId"])){
@@ -32,19 +40,19 @@
 		!empty($_POST["interest"])
 	  ) {
 		  
-		saveInterest(cleanInput($_POST["interest"]));
+		$Interest->saveInterest($Helper->cleanInput($_POST["interest"]));
 		
 	}
 	if ( isset($_POST["userInterest"]) && 
 		!empty($_POST["userInterest"])
 	  ) {
 		 echo $_POST["userInterest"];
-		saveUserInterest(cleanInput($_POST["userInterest"]));
+		$Interest->saveUserInterest($Helper->cleanInput($_POST["userInterest"]));
 		
 	}
 	
-    $UserInterests = getUserInterests();
-    $interests = getAllInterests();
+    $UserInterests = $Interest->getUserInterests();
+    $interests = $Interest->getAllInterests();
 	
 ?>
 <h1><a href="data.php"> < tagasi</a> Kasutaja leht</h1>
@@ -55,7 +63,21 @@
 </p>
 
 
-<h2>Kasutaja hobid</h2>
+<h2>Hobide lisamine</h2>
+
+<form method="POST">
+	
+	<label>Hobi/huviala nimi</label><br>
+	<input name="interest" type="text">
+	
+	<input type="submit" value="Salvesta">
+	
+</form>
+
+
+
+<h2>Lisa kasutajale uus hobi</h2>
+
 <?php
     
     $listHtml = "<ul>";
@@ -73,18 +95,6 @@
 	echo $listHtml;
     
 ?>
-<form method="POST">
-	
-	<label>Hobi/huviala nimi</label><br>
-	<input name="interest" type="text">
-	
-	<input type="submit" value="Salvesta">
-	
-</form>
-
-
-
-<h2>Lisa kasutajale uus hobi</h2>
 <form method="POST">
 	
 	<label>Hobi/huviala nimi</label><br>

@@ -4,6 +4,8 @@
 	
 	
 	require("functions.php");
+	require("User.class.php");
+	$User = new User($mysqli);
 	
 	// kui on sisseloginud siis suunan data lehele
 	if (isset($_SESSION["userId"])) {
@@ -101,7 +103,7 @@
 		
 		echo $password."<br>";
 		
-		signup($signupEmail, $password);
+		$User->signup($signupEmail, $password);
 		
 		
 	}
@@ -114,7 +116,7 @@
 		 !empty($_POST["loginPassword"]) 
 	) {
 		
-		$notice = login($_POST["loginEmail"], $_POST["loginPassword"]);
+		$notice = $User->login($_POST["loginEmail"], $_POST["loginPassword"]);
 		
 	}
 
